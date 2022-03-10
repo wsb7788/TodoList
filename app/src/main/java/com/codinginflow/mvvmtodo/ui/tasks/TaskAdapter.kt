@@ -9,18 +9,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.codinginflow.mvvmtodo.data.Task
 import com.codinginflow.mvvmtodo.databinding.ItemTaskBinding
 
-class TaskAdapter:ListAdapter<Task, TaskAdapter.TaskViewHolder>(DiffCallBack()) {
+class TaskAdapter:ListAdapter<Task, TaskAdapter.TasksViewHolder>(DiffCallBack()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TasksViewHolder {
         val binding = ItemTaskBinding.inflate(LayoutInflater.from(parent.context),parent, false)
-        return TaskViewHolder(binding)
+        return TasksViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: TasksViewHolder, position: Int) {
         val currentItem = getItem(position)
         holder.bind(currentItem)
     }
-    class TaskViewHolder(private val binding:ItemTaskBinding):RecyclerView.ViewHolder(binding.root){
+    class TasksViewHolder(private val binding:ItemTaskBinding):RecyclerView.ViewHolder(binding.root){
 
         fun bind(task:Task){
             binding.apply {

@@ -5,20 +5,20 @@ import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.codinginflow.mvvmtodo.di.ApplicationScope
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Provider
 
 @Database(entities = [Task::class], version = 1)
-abstract class TaskDatabase:RoomDatabase() {
+abstract class TaskDatabase : RoomDatabase() {
 
     abstract fun taskDao(): TaskDao
 
     class Callback @Inject constructor(
-        private val database:Provider<TaskDatabase>,
+        private val database: Provider<TaskDatabase>,
         @ApplicationScope private val applicationScope: CoroutineScope
-    ): RoomDatabase.Callback(){
+    ) : RoomDatabase.Callback() {
+
         override fun onCreate(db: SupportSQLiteDatabase) {
             super.onCreate(db)
 
@@ -26,13 +26,14 @@ abstract class TaskDatabase:RoomDatabase() {
 
             applicationScope.launch {
                 dao.insert(Task("Wash the dishes"))
-                dao.insert(Task("Wash the dishes1", true))
-                dao.insert(Task("Wash the dishes2",completed = true))
-                dao.insert(Task("Wash the dishes3"))
-                dao.insert(Task("Wash the dishes4",completed = true))
-                dao.insert(Task("Wash the dishes5"))
+                dao.insert(Task("Do the laundry"))
+                dao.insert(Task("Buy groceries", important = true))
+                dao.insert(Task("Prepare food", completed = true))
+                dao.insert(Task("Call mom"))
+                dao.insert(Task("Visit grandma", completed = true))
+                dao.insert(Task("Repair my bike"))
+                dao.insert(Task("Call Elon Musk"))
             }
         }
     }
-
 }
