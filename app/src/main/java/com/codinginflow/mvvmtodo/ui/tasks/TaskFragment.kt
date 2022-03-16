@@ -16,6 +16,7 @@ import com.codinginflow.mvvmtodo.R
 import com.codinginflow.mvvmtodo.data.SortOrder
 import com.codinginflow.mvvmtodo.data.Task
 import com.codinginflow.mvvmtodo.databinding.FragmentTasksBinding
+import com.google.android.material.snackbar.Snackbar
 
 
 import dagger.hilt.android.AndroidEntryPoint
@@ -56,12 +57,26 @@ class TaskFragment:Fragment(R.layout.fragment_tasks), TaskAdapter.OnItemClickLis
                     viewModel.onTaskSwiped(task)
                 }
             }).attachToRecyclerView(recyclerViewTasks)
+
         }
 
 
 
         viewModel.tasks.observe(viewLifecycleOwner){
             taskAdapter.submitList(it)
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.tasksEvent.collect { event ->
+                when(event){
+                    is TasksViewModel.TaskEvent.ShowUndoDeleteTaskMessage -> {
+                        Snackbar.make(requireView(), "Task deleted", Snackbar.LENGTH_LONG)
+                            .setAction("UNDO"){
+                                viewModel.onUndoDeleteClick(event.task)
+                            }.show()
+                    }
+                }
+            }
         }
 
         setHasOptionsMenu(true)
