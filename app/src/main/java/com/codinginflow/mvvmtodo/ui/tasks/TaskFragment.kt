@@ -58,6 +58,9 @@ class TaskFragment:Fragment(R.layout.fragment_tasks), TaskAdapter.OnItemClickLis
                 }
             }).attachToRecyclerView(recyclerViewTasks)
 
+            fabAddTask.setOnClickListener {
+                viewModel.onAddNewTaskClick()
+            }
         }
 
 
@@ -69,12 +72,13 @@ class TaskFragment:Fragment(R.layout.fragment_tasks), TaskAdapter.OnItemClickLis
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.tasksEvent.collect { event ->
                 when(event){
-                    is TasksViewModel.TaskEvent.ShowUndoDeleteTaskMessage -> {
+                    is TasksViewModel.TasksEvent.ShowUndoDeleteTaskMessage -> {
                         Snackbar.make(requireView(), "Task deleted", Snackbar.LENGTH_LONG)
                             .setAction("UNDO"){
                                 viewModel.onUndoDeleteClick(event.task)
                             }.show()
                     }
+
                 }
             }
         }
