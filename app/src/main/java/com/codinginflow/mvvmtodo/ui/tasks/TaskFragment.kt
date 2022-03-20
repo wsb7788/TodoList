@@ -19,6 +19,7 @@ import com.codinginflow.mvvmtodo.data.SortOrder
 import com.codinginflow.mvvmtodo.data.Task
 import com.codinginflow.mvvmtodo.databinding.FragmentTasksBinding
 import com.codinginflow.mvvmtodo.util.exhaustive
+import com.codinginflow.mvvmtodo.util.onQueryTextChanged
 import com.google.android.material.snackbar.Snackbar
 
 
@@ -32,6 +33,7 @@ class TaskFragment:Fragment(R.layout.fragment_tasks), TaskAdapter.OnItemClickLis
 
     private val viewModel: TasksViewModel by viewModels()
 
+    private lateinit var searchView: SearchView
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -120,13 +122,18 @@ class TaskFragment:Fragment(R.layout.fragment_tasks), TaskAdapter.OnItemClickLis
         inflater.inflate(R.menu.menu_fragment_task, menu)
 
         val searchItem = menu.findItem(R.id.action_search)
-        val searchView = searchItem.actionView as SearchView
+         searchView = searchItem.actionView as SearchView
 
-        /*searchView.onQueryTextChanged {
+        val pendingQuery = viewModel.searchQuery.value
+        if(pendingQuery != null && pendingQuery.isNotEmpty()) {
+            searchItem.expandActionView()
+            searchView.setQuery(pendingQuery, false)
+        }
+        searchView.onQueryTextChanged {
             // update search query
             viewModel.searchQuery.value = it
 
-        }*/
+        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             menu.findItem(R.id.action_hide_completed_tasks).isChecked =
@@ -156,5 +163,10 @@ class TaskFragment:Fragment(R.layout.fragment_tasks), TaskAdapter.OnItemClickLis
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        searchView.setOnQueryTextListener(null)
     }
 }
